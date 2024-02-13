@@ -4,8 +4,8 @@ In order to verify the norm theory and the exception effect, the classic experim
 
 File Structure:
 inputs/data contains the raw data.
-outputs/data contains the cleaned data set that was constructed.
-outputs/paper contains the paper being replicated.
+outputs contains the cleaned data set that was constructed.
+outputs contains the paper being replicated.
 scripts contains the R scripts used to simulate, download, clean and plot data.
 
 LLM Usage:
