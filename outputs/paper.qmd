@@ -1,0 +1,101 @@
+---
+title: "The bad outcome of the abnormal situation can lead to stronger feelings of regret: conclusion from the classic experiment"
+author: "Yiyan Zhang"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## download data
+
+```{library(MBESS)}
+library(psych)
+library(ggplot2)
+library(dplyr) 
+library(Hmisc)
+library(effsize)
+library(rstudioapi)
+library(jmv)
+library(Rcpp)
+# setting formatting options
+options(scipen=999.99, digits =7)
+
+# load our dataset 
+data<- readRDS("/cloud/project/input/data/osf-past-normality-regret-replication-exp1-data.rds")
+
+#convert rds file to csv
+write.csv(data, "data.csv",row.names = FALSE)
+```
+
+**clean and test data**
+
+```{#checking bound minimum}
+min(data$Q_TotalDuration, na.rm=TRUE) > 0
+
+#clean data
+data<-data[which(data$Q_TotalDuration!=0),]
+#Gender
+data$gender
+table(data$gender)
+#Age
+data$age
+data$age[data$age==99] <- NA
+mean(data$age, na.rm = TRUE)
+sd(data$age, na.rm = TRUE)
+```
+
+**plot charts in scenario 1**
+
+```{r}
+data2<-as.data.frame(table(data$Sc1_regret))
+data2$pro<-data2$Freq/342
+data2$state<-"regret"
+data3<-as.data.frame(table(data$sc1_socnorms1))
+data3$pro<-data3$Freq/342
+data3$state<-"Descriptive norms"
+data4<-as.data.frame(table(data$sc1_socnorms2))
+data4$pro<-data4$Freq/342
+data4$state<-"Injunctive norms"
+data5<-as.data.frame(table(data$sc1_combinednorms))
+data5$pro<-data5$Freq/342
+data5$state<-"Negative effect"
+newdata<-rbind(data2,data3,data4,data5)
+
+newdata |> 
+  ggplot(aes(x = state,y= pro, fill = Var1)) +
+  geom_col(position = "dodge2") + 
+  labs( y = "percentage")
+```
+
+**plot charts in scenario 2**
+
+```{r}
+data$Sc2_random_1
+data$Sc2_random_2
+table(data$Sc2_random_1)
+table(data$Sc2_random_2)
+summary(data$Sc2_random_1)
+summary(data$Sc2_random_2)
+sd(data$Sc2_random_1, na.rm = TRUE)
+sd(data$Sc2_random_2, na.rm = TRUE)
+t.test(data$Sc2_random_1,data$Sc2_random_2, paired=TRUE)
+hist(data$Sc2_random_1, main = "Histogram of routine randomness", xlab = "Adam's (Routine) accident is a random coincidence")
+hist(data$Sc2_random_2, main = "Histogram of exception randomness", xlab = "White's' (Exception) accident is a random coincidence")
+
+#plot charts
+data6<-as.data.frame(table(data$Sc2_regret))
+data6$pro<-data6$Freq/342
+data6$state<-"regret"
+data7<-as.data.frame(table(data$Sc2_lucky))
+data7$pro<-data7$Freq/342
+data7$state<-"luck"
+newdata2<-rbind(data6,data7)
+newdata2$perceived<-c("Adams-Routine","White-Exception","Adams-Routine","White-Exception")
+newdata2 |> 
+  ggplot(aes(x = state,y= pro, fill =perceived)) +
+  geom_col(position = "dodge2") + 
+  labs( y = "percentage")
+```
