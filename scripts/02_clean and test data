@@ -1,3 +1,8 @@
+
+#checking bound minimum
+min(data$Q_TotalDuration, na.rm=TRUE) > 0
+
+#clean data
 data<-data[which(data$Q_TotalDuration!=0),]
 #Gender
 data$gender
